@@ -1,5 +1,5 @@
 # 公開するページのURL
-baseURL = "https://kat0h.github.io/hugo-blog-template"
+baseURL = "https://risechocolate.github.io/"
 
 languageCode = "ja"
 DefaultContentLanguage = "ja"
@@ -7,15 +7,15 @@ HasCJKLanguage = true
 enableRobotsTXT = true
 
 # ブログのタイトル
-title = "hugo-blog-template"
+title = "ちょこみんとのおうち"
 
 theme = "mainroad"
 paginate = 20
 
 # 自己紹介
 [Author]
-    name = "Author"
-    bio = "ここに自己紹介を入れることができます"
+    name = "Rise_chocolate"
+    bio = "日本に住んでいると思われるちょこみんと"
     avatar = "img/avatar.png"
 
 [Params]
@@ -28,12 +28,12 @@ paginate = 20
 
 # ページのテーマカラー
 [Params.style.vars]
-  highlightColor = "#e22d30"
+  highlightColor = "#00F2FF"
 
 # SNS等のユーザー名
 [Params.widgets.social]
-  twitter = "uvrub"
-  github = "kato-k"
+  twitter = "rise_love_vr"
+  github = "Risechocolate"
 
 [Params.sidebar]
     home = "right"
