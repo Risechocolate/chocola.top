@@ -16,7 +16,7 @@ paginate = 20
 [Author]
     name = "Rise_chocolate"
     bio = "日本に住んでいると思われるちょこみんと"
-    avatar = "img/avatar1.png"
+    avatar = "img/avatar.png"
 
 [Params]
     customCSS = ["css/custom.css"]
