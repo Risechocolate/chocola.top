@@ -1,5 +1,5 @@
 # 公開するページのURL
-baseURL = "https://risechocolate.github.io/"
+baseURL = "https://www.chocola.top/"
 
 languageCode = "ja"
 DefaultContentLanguage = "ja"
@@ -15,7 +15,7 @@ paginate = 20
 # 自己紹介
 [Author]
     name = "Rise_chocolate"
-    bio = "日本に住んでいると思われるちょこみんと"
+    bio = "VRChatでのびのびしているちょこみんと。普段は家でごろごろしてる。"
     avatar = "img/avatar.png"
 
 [Params]
