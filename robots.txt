@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://risechocolate.github.io/sitemap.xml
+Sitemap: https://www.chocola.top/sitemap.xml
