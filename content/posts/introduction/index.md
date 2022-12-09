@@ -2,7 +2,7 @@
 title: "自己紹介"
 date: 2022-12-08T04:03:04+09:00
 categories: []
-tags: ["自己紹介"]
+tags: []
 menu: main
 ---
 
