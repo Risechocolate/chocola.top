@@ -1,0 +1,65 @@
+/* footer and navber */
+.footer-link{
+    text-align: right;
+}
+
+.header-main-taxt{
+    font-size: 8.5vw;
+    text-align: center;
+}
+
+.nav-logo-text{
+    list-style: none;
+    display: flex;
+}
+.header{
+    padding-top: 5vw;
+    padding-bottom: 12vw;
+}
+
+/* Track */
+.Track-arrow{
+    border-left: 4vw solid #cfcfcf;
+}
+
+
+/* common */
+.NormalText{
+    font-family: 'Kosugi Maru', sans-serif;
+    font-family: 'Nunito', sans-serif;
+}
+
+.Cbg-dark{
+    background-color: #42444B;
+}
+
+.Cbg-dark-tp{
+    background-color: #42444bb6;
+}
+
+.tc-green{
+    color: #75FF44;
+}
+
+/* card style */
+.cd-title{
+    color: #cfcfcf;
+    text-decoration: underline;
+    text-decoration-color: rgb(206, 206, 206);
+}
+
+
+/* Font Selector */
+.fm-electrolize{
+    font-family: 'Electrolize', sans-serif;
+}
+
+/* FA optimize */
+.fa-links-dis{
+    font-size: 0.85em;
+}
+
+/* Override BootStrap */
+.bg-dark{
+    background-color: #110a20;
+}
