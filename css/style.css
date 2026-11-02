@@ -1,0 +1,235 @@
+/* Layout: トップは左下に名前とリンクだけ、右にアバター、左上の3本線からメニュー。
+   About / Activities / Contact は #ハッシュで切り替わる狭い1カラムの画面。夜の写真に合わせて夜の配色に固定。 */
+:root {
+  --bg: #070e1c;
+  --fg: #eceff2;
+  --muted: #a3adb8;
+  --line: rgba(255, 255, 255, .22);
+  --accent: #8fd0e0;
+  --glass: rgba(5, 12, 28, .5);
+  --overlay-home: rgba(5, 12, 28, .16);
+  --overlay-page: rgba(5, 12, 28, .80);
+  --overlay: var(--overlay-home);
+  --photo: url("../images/bg.webp");
+  --gutter: clamp(16px, 4vw, 72px);
+  --font: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.9;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+/* Home以外: 写真(アバター込み)を背景に。文章は左、アバターは右 */
+body:not([data-view="home"]) { --photo: url("../images/bg-sub.webp"); --overlay: rgba(5, 12, 28, .10); }
+body:not([data-view="home"]) .shade { opacity: 1; background: linear-gradient(to right, rgba(5, 12, 28, .90) 0%, rgba(5, 12, 28, .82) 30%, rgba(5, 12, 28, .5) 44%, rgba(5, 12, 28, .1) 56%, rgba(5, 12, 28, 0) 64%); }
+body:not([data-view="home"]) .wrap { max-width: none; }
+body:not([data-view="home"]) .view { padding-left: calc(var(--gutter) - 16px); }
+body:not([data-view="home"]) .page { max-width: 640px; }
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 0;
+  background-image: linear-gradient(var(--overlay), var(--overlay)), var(--photo);
+  background-size: cover; background-position: center;
+}
+a { color: inherit; text-decoration-color: var(--muted); text-underline-offset: 4px; }
+a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.wrap { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+body[data-view="home"] .wrap { max-width: none; }
+.view { min-height: 100svh; display: flex; flex-direction: column; }
+.view[hidden] { display: none; }
+
+/* 左端から暗くして、アバターの手前で完全に透明にする(トップだけ) */
+.shade {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0; transition: opacity .3s;
+  background: linear-gradient(to right,
+    rgba(5, 12, 28, .78) 0%, rgba(5, 12, 28, .62) 20%, rgba(5, 12, 28, .30) 40%, rgba(5, 12, 28, .08) 54%, rgba(5, 12, 28, 0) 62%);
+}
+body[data-view="home"] .shade { opacity: 1; }
+
+/* avatar */
+.avatar {
+  position: fixed; z-index: 0; right: 0; bottom: 0;
+  height: min(92svh, 1000px); width: auto; max-width: none; max-height: none; object-fit: fill;
+  pointer-events: none; user-select: none; -webkit-user-drag: none;
+}
+
+/* home: 左下に名前とリンクだけ */
+#v-home {
+  justify-content: flex-end;
+  padding-left: calc(var(--gutter) - 16px);
+  padding-bottom: clamp(32px, 8vh, 88px);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, .6);
+}
+#v-home h1 { font-family: "Outfit", var(--font); overflow-wrap: anywhere; font-size: clamp(40px, 6.4vw, 120px); font-weight: 600; line-height: 1.15; margin: 0 0 14px; letter-spacing: .02em; }
+/* 名前の字間: 見た目の間隔がそろうように、文字ごとに --d(em)で足し引きしている */
+#v-home h1 .c { letter-spacing: calc(.02em + var(--d, 0em)); }
+#v-home h1 .us { display: inline-block; transform: scaleX(.5); margin: 0 -.10em 0 -.11em; }
+.links { --ic: clamp(24px, 2vw, 40px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px clamp(20px, 1.8vw, 32px); margin: 0; padding: 0; list-style: none; }
+.links a { display: block; line-height: 0; }
+/* ロゴ: images/icons/ のSVG(黒)を白に反転して表示。差し替えはファイルを置き換えるだけ */
+.links .ic { display: block; height: var(--ic); width: var(--ic); max-width: none; filter: invert(1); }
+.links .wide .ic { width: calc(var(--ic) * 24 / 10.6); height: var(--ic); object-fit: cover; object-position: center; }
+/* ホバーで、そのサービスの色に光る */
+.links .b-x { --glow: #2563D8; }
+.links .b-github { --glow: #fff; }
+.links .b-vrchat { --glow: #2DD4BF; }
+.links a:hover .ic, .links a:focus-visible .ic { filter: invert(1) drop-shadow(0 0 5px var(--glow, #fff)) drop-shadow(0 0 12px var(--glow, #fff)) drop-shadow(0 0 22px var(--glow, #fff)); }
+
+/* menu */
+.menu-btn {
+  position: fixed; z-index: 40;
+  top: calc(max(16px, env(safe-area-inset-top, 0px)) + 4px);
+  left: calc(var(--gutter) + env(safe-area-inset-left, 0px));
+  width: 46px; height: 46px; padding: 0; cursor: pointer;
+  border: 0; background: none; color: var(--fg);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, .55));
+}
+.menu-btn span { position: absolute; left: 0; width: 22px; height: 2px; background: currentColor; border-radius: 1px; transition: transform .12s, opacity .1s, top .12s, background .1s, box-shadow .12s; }
+/* 触れる・選ぶ・開いている間は、線が白く光る */
+.menu-btn:hover span, .menu-btn:focus-visible span, .menu-btn[aria-expanded="true"] span {
+  background: #fff;
+  box-shadow: 0 0 6px #fff, 0 0 14px rgba(255, 255, 255, .75);
+}
+.menu-btn:focus-visible { outline: none; }
+.menu-btn span:nth-child(1) { top: 15px; }
+.menu-btn span:nth-child(2) { top: 22px; }
+.menu-btn span:nth-child(3) { top: 29px; }
+.menu-btn[aria-expanded="true"] span:nth-child(1) { top: 22px; transform: rotate(45deg); }
+.menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.menu-btn[aria-expanded="true"] span:nth-child(3) { top: 22px; transform: rotate(-45deg); }
+
+.menu-panel {
+  position: fixed; inset: 0; z-index: 30;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px calc(var(--gutter) + env(safe-area-inset-right, 0px)) 48px calc(var(--gutter) + env(safe-area-inset-left, 0px));
+}
+/* トップではメニューの背景を左端からのグラデーションにして、アバターの手前で透明にする */
+.menu-panel::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to right, rgba(5, 12, 28, .94) 0%, rgba(5, 12, 28, .88) 30%, rgba(5, 12, 28, .45) 48%, rgba(5, 12, 28, 0) 62%);
+}
+/* アバターが出ない他のページでは、全面を暗くして読みやすくする */
+body:not([data-view="home"]) .menu-panel::before { background: rgba(5, 12, 28, .93); -webkit-mask-image: none; mask-image: none; }
+.menu-panel[hidden] { display: none; }
+#v-home { transition: opacity .12s; }
+body.menu-open #v-home { opacity: 0; }
+.menu-panel ul { list-style: none; margin: 0; padding: 0; }
+.menu-panel li { padding: 12px 0; }
+.menu-panel a { display: inline-block; text-decoration: none; font-size: clamp(24px, 2.2vw, 34px); font-weight: 500; letter-spacing: .06em; line-height: 1.3; }
+.menu-panel a small { display: block; font-size: 14px; font-weight: 400; color: var(--muted); letter-spacing: .06em; }
+body[data-view="home"] .menu-panel a[href="index.html"],
+body[data-view="about"] .menu-panel a[href="about.html"],
+body[data-view="links"] .menu-panel a[href="links.html"],
+body[data-view="contact"] .menu-panel a[href="contact.html"] { color: var(--glow); }
+
+/* sub pages */
+.page { padding-block: 104px 64px; flex: 1; }
+.page h2 { font-size: clamp(28px, 6vw, 38px); font-weight: 700; line-height: 1.4; margin: 0 0 24px; }
+.page p { margin: 0 0 1em; }
+.facts { display: grid; grid-template-columns: 6em minmax(0, 1fr); gap: 6px 16px; margin: 28px 0 0; }
+.facts dt { color: var(--muted); font-size: 14px; }
+.facts dd { margin: 0; }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { padding: 12px 0; border-top: 1px solid var(--line); }
+.list li:last-child { border-bottom: 1px solid var(--line); }
+.list b { font-weight: 700; }
+.list li > a, .list li > .st { display: flex; align-items: center; gap: 0; padding: 4px 0; font-size: 20px; font-weight: 700; text-decoration: none; }
+.list li > a .lt, .list li > .st .lt { display: inline; color: inherit; font-size: inherit; line-height: inherit; }
+.list .lic { flex: none; width: 26px; height: 26px; max-width: none; margin: 0 25px 0 9px; filter: invert(1); transition: filter .15s ease; }
+.list .lic-wide { width: 44px; height: 20px; margin: 0 16px 0 0; object-fit: cover; object-position: center; }
+/* ホバーで、そのサービスの色に光る */
+.list .b-discord { --glow: #5865F2; }
+.list .b-pixiv { --glow: #FFC93C; }
+.list .b-steam { --glow: #66C0F4; }
+.list .b-github, .list .b-vrchat, .list .b-mail { --glow: #fff; }
+.list .b-x { --glow: #2563D8; }
+.list li > a:hover .lic, .list li > a:focus-visible .lic { filter: invert(1) drop-shadow(0 0 5px var(--glow)) drop-shadow(0 0 12px var(--glow)) drop-shadow(0 0 22px var(--glow)); }
+.list li > a:hover .lt, .list li > a:focus-visible .lt { text-shadow: 0 0 12px var(--glow), 0 0 24px var(--glow); }
+.list li > a .lt { transition: text-shadow .15s ease; }
+.list li > a:hover, .list li > a:focus-visible { color: #fff; }
+.list span { display: block; color: var(--muted); font-size: 14px; line-height: 1.7; }
+.contact { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 20px; }
+.addr { overflow-wrap: anywhere; min-width: 0; font-size: 18px; }
+button.copy { font: inherit; font-size: 14px; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; }
+button.copy:hover { color: var(--accent); }
+.note { color: var(--muted); font-size: 14px; }
+footer { padding-block: 0 max(28px, env(safe-area-inset-bottom, 0px)); color: var(--muted); font-size: 13px; }
+
+@media (max-width: 820px) {
+  /* スマホ: 名前とリンクは上、アバターは下に大きく据えて画面の下端で切る。月はアバターの後ろに */
+  body::before { background-position: 10% center; }
+  body:not([data-view="home"]) { --photo: url("../images/bg-sub-phone.webp"); --overlay: rgba(5, 12, 28, .5); }
+  body:not([data-view="home"])::before { background-position: center; }
+  body:not([data-view="home"]) .shade { opacity: 1; z-index: 0; background: linear-gradient(to bottom, rgba(5, 12, 28, .92) 0%, rgba(5, 12, 28, .84) 26%, rgba(5, 12, 28, .5) 46%, rgba(5, 12, 28, .12) 64%, rgba(5, 12, 28, 0) 78%); }
+  body:not([data-view="home"]) .view { padding-left: 0; }
+  #v-home { justify-content: flex-end; padding-top: 24px; padding-bottom: 36px; }
+  .avatar { right: -6%; bottom: 0; height: 90svh; -webkit-mask-image: none; mask-image: none; }
+  #v-home h1 { font-size: min(44px, 10.8vw); white-space: nowrap; }
+  #v-home { text-shadow: 0 1px 3px rgba(5, 12, 28, .7), 0 0 22px rgba(5, 12, 28, .75); }
+  .shade { z-index: 1; background: linear-gradient(to top, rgba(5, 12, 28, .9) 0%, rgba(5, 12, 28, .72) 16%, rgba(5, 12, 28, .38) 32%, rgba(5, 12, 28, 0) 52%); }
+  body[data-view="home"] .menu-panel::before { background: rgba(5, 12, 28, .93); -webkit-mask-image: none; mask-image: none; }
+  /* スマホのメニュー: 項目を画面の真ん中に、中央揃えで出す */
+  .menu-panel { align-items: center; justify-content: center; text-align: center; padding: 0 16px; }
+  .menu-panel li { padding: 10px 0; }
+  .menu-panel a { font-size: 26px; }
+  .menu-panel a:hover, .menu-panel a:focus-visible { transform: none; }
+}
+@media (min-width: 821px) { body::before { background-position: 70% center; } }
+@media (max-width: 480px) { .facts { grid-template-columns: 1fr; gap: 0; } .facts dt { padding-top: 12px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .view:not([hidden]) { animation: in .18s ease; }
+  .menu-panel:not([hidden]) { animation: fade .12s ease; }
+  /* メニュー項目: 色が滑らかに変わり、触れると少し右へ動いて光る。開くときは順に浮き上がる */
+  .links a { transition: transform .15s ease; }
+  .links a:hover, .links a:focus-visible { transform: translateY(-2px); }
+  .menu-panel a { transition: color .2s ease, transform .2s ease, text-shadow .2s ease; }
+  .menu-panel a small { transition: color .2s ease; }
+  .menu-panel a:hover, .menu-panel a:focus-visible { transform: translateX(8px); color: var(--glow, #8fd0e0); text-shadow: 0 0 10px var(--glow, #8fd0e0), 0 0 24px var(--glow, #8fd0e0); }
+  .menu-panel a:hover small, .menu-panel a:focus-visible small { color: var(--fg); }
+  .menu-panel:not([hidden]) li { animation: rise .22s ease both; }
+  .menu-panel li:nth-child(2) { animation-delay: .04s; }
+  .menu-panel li:nth-child(3) { animation-delay: .08s; }
+  .menu-panel li:nth-child(4) { animation-delay: .12s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes in { from { opacity: 0; } }
+  @keyframes fade { from { opacity: 0; } }
+}
+
+/* 基本 */
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+
+.links .ic { transition: filter .15s ease; }
+.menu-panel::before, .shade { will-change: opacity; }
+
+/* Contact: メールアドレスの下に、アドレスとコピーを出す */
+.mailline { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: -2px 0 8px 60px; }
+.mailline .addr { font-size: 16px; }
+
+/* コピーしたとき: 「コピー」が1文字ずつ上に抜けて、「コピーしました」が1文字ずつ下から入る */
+button.copy { display: inline-grid; overflow: hidden; vertical-align: middle; line-height: 1.7; transition: color .15s ease; }
+button.copy > span { position: relative; grid-area: 1 / 1; justify-self: start; padding-bottom: 1px; }
+button.copy > span::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transition: opacity .15s ease; }
+button.copy .ch { display: inline-block; }
+button.copy .cp-b .ch { transform: translateY(120%); opacity: 0; }
+button.copy .cp-b::after { opacity: 0; }
+button.copy.done { color: #fff; }
+button.copy.done .cp-a .ch { transform: translateY(-120%); opacity: 0; }
+button.copy.done .cp-a::after { opacity: 0; }
+button.copy.done .cp-b .ch { transform: translateY(0); opacity: 1; text-shadow: 0 0 8px rgba(255, 255, 255, .8), 0 0 18px rgba(255, 255, 255, .45); }
+button.copy.done .cp-b::after { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  button.copy .ch { transition: transform .26s cubic-bezier(.3, .9, .3, 1), opacity .2s ease; transition-delay: calc(var(--i) * 32ms); }
+  button.copy.done .cp-b .ch { transition-delay: calc(var(--i) * 32ms + 70ms); }
+}
