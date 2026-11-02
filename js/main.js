@@ -23,7 +23,12 @@
     if (open) { var a = mp.querySelector('a'); if (a) a.focus(); }
   }
   mb.addEventListener('click', function () { setMenu(mp.hidden); });
-  mp.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+  mp.addEventListener('click', function (e) {
+    var a = e.target.closest('a');
+    if (!a) return;
+    setMenu(false);
+    if (a.classList.contains('current')) mb.focus();  // 移動しないので、隠れたリンクではなくボタンにフォーカスを戻す
+  });
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && !mp.hidden) { setMenu(false); mb.focus(); } });
   // 戻る・進むで復元されたとき、PC幅に変わったとき(メニューが出ない幅)は閉じる
   addEventListener('pageshow', function () { setMenu(false); });
@@ -68,6 +73,7 @@
       document.body.appendChild(t); t.select();
       var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
       document.body.removeChild(t);
+      btn.focus();  // 選択のために動いたフォーカスをボタンに戻す
       done(ok ? 'コピーしました' : 'コピーできません');
     };
     btn.addEventListener('click', function () {
