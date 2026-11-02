@@ -30,19 +30,31 @@
     if (a.classList.contains('current')) mb.focus();  // 移動しないので、隠れたリンクではなくボタンにフォーカスを戻す
   });
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && !mp.hidden) { setMenu(false); mb.focus(); } });
-  // 戻る・進むで復元されたとき、PC幅に変わったとき(メニューが出ない幅)は閉じる
+  // 戻る・進むで復元されたときは閉じる
   addEventListener('pageshow', function () { setMenu(false); });
+
+  // PC幅(上部ナビ)とスマホ幅(メニュー)が切り替わったとき、消えた側にあったフォーカスを、出てきた側へ移す。
+  // 切り替わった瞬間にCSSで消えてフォーカスは外れてしまうので、最後にフォーカスがあった場所を覚えておく
+  var last = null;
+  addEventListener('focusin', function (e) { last = e.target; });
   var pc = matchMedia('(min-width: 821px)');
-  var onWide = function () {
-    if (!pc.matches || mp.hidden) return;
-    // 開いている間に触れられるのはメニューとボタンだけ。PC幅ではどちらも消えてフォーカスが外れるので、
-    // 上部ナビの今いるページへ移す(フォーカスが本文側の要素に残っているときは何もしない)
+  var onSwitch = function () {
+    // 今フォーカスがある要素(すでに外れていれば、最後にあった要素)
     var ae = document.activeElement;
-    var lost = !ae || ae === document.body || mp.contains(ae) || ae === mb;
-    setMenu(false);
-    if (lost) { var cur = document.querySelector('.topnav a.current'); if (cur) cur.focus(); }
+    var at = (ae && ae !== document.body) ? ae : last;
+    var from = function (el) { return !!(at && el && el.contains(at)); };
+    var target = null;
+    if (pc.matches) {
+      // スマホ → PC: メニューは出ない幅なので閉じる。メニューかボタンにいたなら、上部ナビの今いるページへ
+      if (from(mp) || from(mb)) target = document.querySelector('.topnav a.current');
+      if (!mp.hidden) setMenu(false);
+    } else if (from(document.querySelector('.topnav'))) {
+      target = mb;  // PC → スマホ: 上部ナビにいたなら、メニューボタンへ
+    }
+    // 新しい幅の表示が反映されてから移す(反映前だと、まだ隠れていて移せないことがある)
+    if (target) requestAnimationFrame(function () { target.focus(); });
   };
-  if (pc.addEventListener) pc.addEventListener('change', onWide); else pc.addListener(onWide);
+  if (pc.addEventListener) pc.addEventListener('change', onSwitch); else pc.addListener(onSwitch);
 
   // コピーボタン: 表示は rise[at]chocola.top、コピーするときだけ @ に戻す(HTMLに生のアドレスを書かないため)
   each('button.copy', function (btn) {
