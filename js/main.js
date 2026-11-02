@@ -33,7 +33,15 @@
   // 戻る・進むで復元されたとき、PC幅に変わったとき(メニューが出ない幅)は閉じる
   addEventListener('pageshow', function () { setMenu(false); });
   var pc = matchMedia('(min-width: 821px)');
-  var onWide = function () { if (pc.matches && !mp.hidden) setMenu(false); };
+  var onWide = function () {
+    if (!pc.matches || mp.hidden) return;
+    // 開いている間に触れられるのはメニューとボタンだけ。PC幅ではどちらも消えてフォーカスが外れるので、
+    // 上部ナビの今いるページへ移す(フォーカスが本文側の要素に残っているときは何もしない)
+    var ae = document.activeElement;
+    var lost = !ae || ae === document.body || mp.contains(ae) || ae === mb;
+    setMenu(false);
+    if (lost) { var cur = document.querySelector('.topnav a.current'); if (cur) cur.focus(); }
+  };
   if (pc.addEventListener) pc.addEventListener('change', onWide); else pc.addListener(onWide);
 
   // コピーボタン: 表示は rise[at]chocola.top、コピーするときだけ @ に戻す(HTMLに生のアドレスを書かないため)
