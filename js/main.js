@@ -18,8 +18,14 @@
   // 戻る・進むで復元されたときにメニューが開いたままにならないように
   addEventListener('pageshow', function () { setMenu(false); });
 
-  var cur = mp.querySelector('a[href="' + (location.pathname.split('/').pop() || 'index.html') + '"]');
-  if (cur) { cur.classList.add('current'); cur.setAttribute('aria-current', 'page'); }
+  // 今いるページの項目に印を付ける(スマホのメニューと、PCの上部ナビの両方)
+  var here = location.pathname.split('/').pop() || 'index.html';
+  Array.prototype.forEach.call(document.querySelectorAll('#mp a, .topnav a'), function (a) {
+    if (a.getAttribute('href') === here) { a.classList.add('current'); a.setAttribute('aria-current', 'page'); }
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.topnav a'), function (a) {
+    a.addEventListener('click', function (e) { if (a.classList.contains('current')) e.preventDefault(); });
+  });
 
   // コピーボタン: 表示は rise[at]chocola.top でも、コピーするときは @ に戻す(HTMLに生のアドレスを書かないため)
   Array.prototype.forEach.call(document.querySelectorAll('button.copy'), function (btn) {

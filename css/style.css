@@ -131,11 +131,15 @@ body.menu-open #v-home { opacity: 0; }
 body[data-view="home"] .menu-panel a[href="index.html"],
 body[data-view="about"] .menu-panel a[href="about.html"],
 body[data-view="links"] .menu-panel a[href="links.html"],
-body[data-view="contact"] .menu-panel a[href="contact.html"] { color: var(--glow); }
+body[data-view="contact"] .menu-panel a[href="contact.html"],
+body[data-view="home"] .topnav a[href="index.html"],
+body[data-view="about"] .topnav a[href="about.html"],
+body[data-view="links"] .topnav a[href="links.html"],
+body[data-view="contact"] .topnav a[href="contact.html"] { color: var(--glow); }
 
 /* sub pages */
 .page { padding-block: 104px 64px; flex: 1; }
-.page h2 { font-size: clamp(28px, 6vw, 38px); font-weight: 700; line-height: 1.4; margin: 0 0 24px; }
+.page h1 { font-size: clamp(28px, 6vw, 38px); font-weight: 700; line-height: 1.4; margin: 0 0 24px; }
 .page p { margin: 0 0 1em; }
 .facts { display: grid; grid-template-columns: 6em minmax(0, 1fr); gap: 6px 16px; margin: 28px 0 0; }
 .facts dt { color: var(--muted); font-size: 14px; }
@@ -233,3 +237,29 @@ button.copy.done .cp-b::after { opacity: 1; }
   button.copy .ch { transition: transform .26s cubic-bezier(.3, .9, .3, 1), opacity .2s ease; transition-delay: calc(var(--i) * 32ms); }
   button.copy.done .cp-b .ch { transition-delay: calc(var(--i) * 32ms + 70ms); }
 }
+
+/* メニューとPCの上部ナビ: 項目ごとの色(ホバーと現在地で使う) */
+.menu-panel a[href="index.html"], .topnav a[href="index.html"] { --glow: #5eb8ff; }
+.menu-panel a[href="about.html"], .topnav a[href="about.html"] { --glow: #9be04a; }
+.menu-panel a[href="links.html"], .topnav a[href="links.html"] { --glow: #ff7eb6; }
+.menu-panel a[href="contact.html"], .topnav a[href="contact.html"] { --glow: #ffa23a; }
+
+/* PC: ページ名を左上に並べる(スマホはハンバーガー) */
+.topnav { display: none; }
+@media (min-width: 821px) {
+  .menu-btn, .menu-panel { display: none !important; }
+  .topnav {
+    position: fixed; z-index: 40; display: flex; align-items: center; gap: clamp(22px, 2.2vw, 40px);
+    top: calc(max(16px, env(safe-area-inset-top, 0px)) + 4px); height: 46px;
+    left: calc(var(--gutter) + env(safe-area-inset-left, 0px));
+    text-shadow: 0 1px 8px rgba(0, 0, 0, .6);
+  }
+  .topnav a { color: var(--fg); font-size: 16px; font-weight: 500; letter-spacing: .06em; text-decoration: none; transition: color .15s ease, text-shadow .15s ease; }
+  .topnav a:hover, .topnav a:focus-visible { color: var(--glow, #fff); text-shadow: 0 0 10px var(--glow, #fff), 0 0 24px var(--glow, #fff); }
+}
+
+/* 読みやすさ: 小さい文字を少し大きく・明るく */
+.facts dt { font-size: 15px; color: rgba(236, 239, 242, .78); }
+.mailline .addr { font-size: 17px; color: rgba(236, 239, 242, .9); }
+button.copy { font-size: 15px; color: rgba(236, 239, 242, .85); }
+footer { font-size: 14px; color: rgba(236, 239, 242, .7); }
